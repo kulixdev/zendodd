@@ -36,7 +36,7 @@
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
             opacity: 0.4;
-            animation: randomMove 30s linear infinite; /* Slower movement */
+            animation: randomMove linear infinite;
         }
         @keyframes randomMove {
             0% {
@@ -73,7 +73,7 @@
 
         // Function to generate a random star
         function generateRandomStar() {
-            let x, y, size, directionX, directionY;
+            let x, y, size, directionX, directionY, randomDuration;
 
             // Generate random position
             x = Math.random() * 100; // x position (0-100vw)
@@ -81,6 +81,9 @@
             size = Math.random() * 3 + 2; // Size between 2px and 5px
             directionX = (Math.random() - 0.5) * 100; // Random horizontal movement (-50 to 50vw)
             directionY = (Math.random() - 0.5) * 100; // Random vertical movement (-50 to 50vh)
+
+            // Random movement duration between 45s (45 seconds) and 1.5m (90 seconds)
+            randomDuration = Math.random() * 45 + 45; // Random between 45s and 90s
 
             const star = document.createElement('div');
             star.classList.add('star');
@@ -92,7 +95,10 @@
 
             // Set the random movement with CSS custom properties
             star.style.setProperty('--moveX', `${directionX}vw`);
-            star.style.setProperty('--moveY', `${directionY}vh`);
+            star.style.setProperty('--moveY`, `${directionY}vh`);
+
+            // Set the random duration for the movement
+            star.style.animationDuration = `${randomDuration}s`;
 
             // Append star to the container
             starsContainer.appendChild(star);
@@ -107,7 +113,7 @@
                     star.remove(); // Remove the star once it is completely faded out
                     generateRandomStar(); // Generate a new star to maintain 96 stars
                 }, 5000); // Wait for the fade-out to finish before removing the star
-            }, 30000); // Star movement duration is 30 seconds
+            }, randomDuration * 1000); // Wait for the star to complete its movement duration (converted to ms)
         }
 
         // Generate the initial set of 96 stars
@@ -120,7 +126,7 @@
             if (starsContainer.children.length < totalStars) {
                 generateRandomStar();
             }
-        }, 50); // Check every 200ms to maintain exactly 96 stars
+        }, 200); // Check every 200ms to maintain exactly 96 stars
     </script>
 </body>
 </html>
