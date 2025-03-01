@@ -73,6 +73,7 @@
         const starsContainer = document.querySelector('.stars');
         const totalStars = 96; // Ensure 96 stars on screen at all times
         const starPositions = [];
+        let lastStarRemovedTime = 0; // Track when the last star was removed to limit fade-out rate
 
         function generateRandomStar() {
             let x, y, size, opacity, lifetime, delay, movementX, movementY;
@@ -83,7 +84,7 @@
                 y = Math.random() * 100;
                 size = Math.random() * 3 + 2; // Increased minimum size to 2px
                 opacity = Math.random() * 0.4 + 0.3; // Random opacity between 0.3 and 0.7
-                lifetime = Math.random() * 6 + 6; // Random lifetime between 6 and 12 seconds
+                lifetime = Math.random() * 5 + 10; // Random lifetime between 10 and 15 seconds
                 delay = Math.random() * 3 + 2; // Delay between 2 and 5 seconds before fading in
                 movementX = (Math.random() - 0.5) * 0.3; // Slight horizontal movement
                 movementY = (Math.random() - 0.5) * 0.3; // Slight vertical movement
@@ -112,10 +113,13 @@
             starsContainer.appendChild(star);
 
             // Remove star after its lifetime
+            const starLifetimeWithDelay = (lifetime + delay) * 1000;
+            const removalDelay = Math.max(2000 - (Date.now() - lastStarRemovedTime), 0); // Ensure 2 seconds between removals
             setTimeout(() => {
                 star.remove();
+                lastStarRemovedTime = Date.now(); // Update time of the last star removal
                 generateRandomStar(); // Generate a new star to replace the one that just faded out
-            }, (lifetime + delay) * 1000);
+            }, starLifetimeWithDelay + removalDelay);
         }
 
         // Generate the initial set of 96 stars
