@@ -47,30 +47,6 @@
             0% { transform: translate(-50%, -50%) scale(1); }
             100% { transform: translate(50%, 50%) scale(1.5); }
         }
-        .comet {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background-color: rgba(255, 255, 255, 1);
-            border-radius: 50%;
-            animation: cometMovement 5s linear forwards;
-        }
-        .comet-trail {
-            position: absolute;
-            width: 2px;
-            height: 20px;
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            animation: trailFade 5s linear forwards;
-        }
-        @keyframes cometMovement {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(100vw, 0); }
-        }
-        @keyframes trailFade {
-            0% { opacity: 0.5; }
-            100% { opacity: 0; }
-        }
         .content {
             text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.2);
             z-index: 2;
@@ -93,40 +69,35 @@
     </div>
 
     <script>
-        // Generate random stars
         const starsContainer = document.querySelector('.stars');
-        for (let i = 0; i < 200; i++) {
+        const starPositions = [];
+
+        function generateRandomStar() {
+            let x, y;
+
+            // Ensure that the new star position does not overlap any existing ones
+            do {
+                x = Math.random() * 100;
+                y = Math.random() * 100;
+            } while (starPositions.some(pos => {
+                return Math.abs(pos.x - x) < 5 && Math.abs(pos.y - y) < 5; // Minimum distance between stars
+            }));
+
+            starPositions.push({ x, y });
+
             const star = document.createElement('div');
             star.classList.add('star');
-            star.style.top = `${Math.random() * 100}vh`;
-            star.style.left = `${Math.random() * 100}vw`;
+            star.style.top = `${y}vh`;
+            star.style.left = `${x}vw`;
             star.style.animationDuration = `${Math.random() * 3 + 1}s`;
+
             starsContainer.appendChild(star);
         }
 
-        // Generate random comets
-        function createComet() {
-            const comet = document.createElement('div');
-            comet.classList.add('comet');
-            comet.style.top = `${Math.random() * 50}vh`;
-            comet.style.left = `-${Math.random() * 10}vw`;
-            comet.style.animationDuration = `${Math.random() * 3 + 2}s`;
-
-            const trail = document.createElement('div');
-            trail.classList.add('comet-trail');
-            trail.style.top = `${parseFloat(comet.style.top) + 4}px`; // Slightly below comet
-            trail.style.left = `${parseFloat(comet.style.left) + 4}px`; // Slightly right of comet
-
-            starsContainer.appendChild(trail);
-            starsContainer.appendChild(comet);
-
-            setTimeout(() => {
-                comet.remove();
-                trail.remove();
-            }, 5000);
+        // Generate 200 stars to start with
+        for (let i = 0; i < 200; i++) {
+            generateRandomStar();
         }
-
-        setInterval(createComet, 3000);
     </script>
 </body>
 </html>
