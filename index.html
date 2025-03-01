@@ -32,11 +32,11 @@
         }
         .star {
             position: absolute;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.4); /* Random transparency between 35% and 50% */
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-            opacity: 0.7;
-            animation: randomMove 20s linear infinite;
+            opacity: 0.4;
+            animation: randomMove 30s linear infinite; /* Slower movement */
         }
         @keyframes randomMove {
             0% {
@@ -44,7 +44,6 @@
             }
             100% {
                 transform: translate(var(--moveX), var(--moveY));
-                opacity: 0;
             }
         }
         .content {
@@ -71,16 +70,15 @@
     <script>
         const starsContainer = document.querySelector('.stars');
         const totalStars = 96; // Ensure 96 stars on screen at all times
-        const starPositions = [];
 
+        // Function to generate a random star
         function generateRandomStar() {
-            let x, y, size, opacity, directionX, directionY;
+            let x, y, size, directionX, directionY;
 
-            // Generate random position and movement direction
+            // Generate random position
             x = Math.random() * 100; // x position (0-100vw)
             y = Math.random() * 100; // y position (0-100vh)
             size = Math.random() * 3 + 2; // Size between 2px and 5px
-            opacity = Math.random() * 0.4 + 0.3; // Random opacity between 0.3 and 0.7
             directionX = (Math.random() - 0.5) * 100; // Random horizontal movement (-50 to 50vw)
             directionY = (Math.random() - 0.5) * 100; // Random vertical movement (-50 to 50vh)
 
@@ -90,7 +88,7 @@
             star.style.left = `${x}vw`;
             star.style.width = `${size}px`;
             star.style.height = `${size}px`;
-            star.style.opacity = opacity;
+            star.style.opacity = Math.random() * 0.15 + 0.35; // Random opacity between 35% and 50%
 
             // Set the random movement with CSS custom properties
             star.style.setProperty('--moveX', `${directionX}vw`);
@@ -101,8 +99,7 @@
 
             // Track star position for when it reaches the edge
             setTimeout(() => {
-                // Star reached the edge; fade it out and then generate a new star
-                star.style.animation = 'none'; // Stop the movement
+                // Star has reached the edge, fade out and then generate a new star
                 star.style.transition = 'opacity 5s ease-in-out'; // Slow fade-out
                 star.style.opacity = 0;
 
@@ -110,7 +107,7 @@
                     star.remove(); // Remove the star once it is completely faded out
                     generateRandomStar(); // Generate a new star to maintain 96 stars
                 }, 5000); // Wait for the fade-out to finish before removing the star
-            }, 20000); // Make the star move for 20 seconds before it reaches the edge and fades out
+            }, 30000); // Star movement duration is 30 seconds
         }
 
         // Generate the initial set of 96 stars
