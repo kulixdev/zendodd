@@ -130,7 +130,7 @@
             // Track when the star reaches the edge of the screen
             setTimeout(() => {
                 // Star has reached the edge, remove and regenerate the star
-                star.remove();
+                star.remove(); // Remove the star
                 generateRandomStar(); // Generate a new star to maintain 96 stars
             }, randomDuration * 1000); // Wait for the star to complete its movement duration (converted to ms)
         }
