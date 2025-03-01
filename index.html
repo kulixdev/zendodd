@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Placeholder</title>
+    <title>Placeholder Website</title>
     <style>
         * {
             margin: 0;
@@ -32,11 +32,10 @@
         }
         .star {
             position: absolute;
-            width: 2px;
-            height: 2px;
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             animation: twinkle 1s infinite alternate, randomMove 10s infinite linear;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
         }
         @keyframes twinkle {
             0% { opacity: 0.4; }
@@ -73,14 +72,16 @@
         const starPositions = [];
 
         function generateRandomStar() {
-            let x, y;
+            let x, y, size, opacity;
 
             // Ensure that the new star position does not overlap any existing ones
             do {
                 x = Math.random() * 100;
                 y = Math.random() * 100;
+                size = Math.random() * 3 + 1; // Random size between 1 and 4 pixels
+                opacity = Math.random() * 0.5 + 0.3; // Random opacity between 0.3 and 0.8
             } while (starPositions.some(pos => {
-                return Math.abs(pos.x - x) < 5 && Math.abs(pos.y - y) < 5; // Minimum distance between stars
+                return Math.abs(pos.x - x) < 4 && Math.abs(pos.y - y) < 4; // Minimum distance between stars
             }));
 
             starPositions.push({ x, y });
@@ -89,7 +90,9 @@
             star.classList.add('star');
             star.style.top = `${y}vh`;
             star.style.left = `${x}vw`;
-            star.style.animationDuration = `${Math.random() * 3 + 1}s`;
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.opacity = opacity;
 
             starsContainer.appendChild(star);
         }
