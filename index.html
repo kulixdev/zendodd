@@ -32,11 +32,19 @@
         }
         .star {
             position: absolute;
-            background-color: rgba(255, 255, 255, 0.4); /* Random transparency between 35% and 50% */
+            background-color: rgba(255, 255, 255, 0.6); /* Increased opacity to make stars brighter */
             border-radius: 50%;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
-            opacity: 0.4;
-            transition: opacity 5s ease-in-out; /* Slow fade-out */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); /* More prominent glow */
+            opacity: 0.6; /* Increased opacity */
+            animation: moveStar 0s linear infinite;
+        }
+        @keyframes moveStar {
+            from {
+                transform: translate(0, 0);
+            }
+            to {
+                transform: translate(var(--moveX), var(--moveY));
+            }
         }
         .content {
             text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.2);
@@ -109,7 +117,7 @@
             star.style.left = `${x}vw`;
             star.style.width = `${size}px`;
             star.style.height = `${size}px`;
-            star.style.opacity = Math.random() * 0.15 + 0.35; // Random opacity between 35% and 50%
+            star.style.opacity = Math.random() * 0.2 + 0.6; // Random opacity between 60% and 80%
 
             // Set the random movement duration and direction using CSS properties
             star.style.setProperty('--moveX', `${directionX}vw`);
@@ -121,13 +129,9 @@
 
             // Track when the star reaches the edge of the screen
             setTimeout(() => {
-                // Star has reached the edge, fade out and then generate a new star
-                star.style.opacity = 0;
-
-                setTimeout(() => {
-                    star.remove(); // Remove the star once it is completely faded out
-                    generateRandomStar(); // Generate a new star to maintain 96 stars
-                }, 5000); // Wait for the fade-out to finish before removing the star
+                // Star has reached the edge, remove and regenerate the star
+                star.remove();
+                generateRandomStar(); // Generate a new star to maintain 96 stars
             }, randomDuration * 1000); // Wait for the star to complete its movement duration (converted to ms)
         }
 
