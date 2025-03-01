@@ -34,17 +34,18 @@
             position: absolute;
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
-            animation: twinkle 1s infinite alternate, randomMove 10s infinite linear;
             box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
-        }
-        @keyframes twinkle {
-            0% { opacity: 0.4; }
-            50% { opacity: 0.8; }
-            100% { opacity: 0.4; }
+            opacity: 0;
+            animation: randomMove 10s infinite linear, fadeInOut 15s infinite linear;
         }
         @keyframes randomMove {
             0% { transform: translate(-50%, -50%) scale(1); }
             100% { transform: translate(50%, 50%) scale(1.5); }
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
         }
         .content {
             text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.2);
@@ -69,10 +70,11 @@
 
     <script>
         const starsContainer = document.querySelector('.stars');
+        const totalStars = 96; // Ensure 96 stars on screen at all times
         const starPositions = [];
 
         function generateRandomStar() {
-            let x, y, size, opacity;
+            let x, y, size, opacity, lifetime, delay;
 
             // Ensure that the new star position does not overlap any existing ones
             do {
@@ -80,6 +82,8 @@
                 y = Math.random() * 100;
                 size = Math.random() * 3 + 1; // Random size between 1 and 4 pixels
                 opacity = Math.random() * 0.5 + 0.3; // Random opacity between 0.3 and 0.8
+                lifetime = Math.random() * 5 + 5; // Random lifetime between 5 and 10 seconds
+                delay = Math.random() * 2 + 1; // Delay between 1 and 3 seconds before fading in
             } while (starPositions.some(pos => {
                 return Math.abs(pos.x - x) < 4 && Math.abs(pos.y - y) < 4; // Minimum distance between stars
             }));
@@ -93,12 +97,20 @@
             star.style.width = `${size}px`;
             star.style.height = `${size}px`;
             star.style.opacity = opacity;
+            star.style.animationDuration = `${lifetime}s`;
+            star.style.animationDelay = `${delay}s`; // Add delay to fade-in after a random time
 
             starsContainer.appendChild(star);
+
+            // Remove star after its lifetime
+            setTimeout(() => {
+                star.remove();
+                generateRandomStar(); // Generate a new star to replace the one that just faded out
+            }, (lifetime + delay) * 1000);
         }
 
-        // Generate 200 stars to start with
-        for (let i = 0; i < 200; i++) {
+        // Generate the initial set of 96 stars
+        for (let i = 0; i < totalStars; i++) {
             generateRandomStar();
         }
     </script>
