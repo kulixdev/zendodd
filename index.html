@@ -36,7 +36,7 @@
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
             opacity: 0;
-            animation: randomMove 10s infinite linear, fadeInOut 15s infinite linear;
+            animation: randomMove 15s infinite linear, fadeInOut 15s infinite ease-in-out;
         }
         @keyframes randomMove {
             0% { transform: translate(-50%, -50%) scale(1); }
@@ -101,18 +101,18 @@
             star.style.width = `${size}px`;
             star.style.height = `${size}px`;
             star.style.opacity = opacity;
-            star.style.animationDuration = `${lifetime}s`;
+            star.style.animationDuration = `${lifetime + delay}s`; // Ensure the star fades in and out over a longer time
             star.style.animationDelay = `${delay}s`; // Add delay to fade-in after a random time
             star.style.animationName = `fadeInOut, randomMove`;
 
             // Add slight movement during the lifetime of the star
-            star.style.animationTimingFunction = "linear";
+            star.style.animationTimingFunction = "ease-in-out";
             star.style.animationIterationCount = "infinite";
             star.style.transform = `translate(${movementX}vw, ${movementY}vh)`; // Apply random movement
 
             starsContainer.appendChild(star);
 
-            // Remove star after its lifetime
+            // Remove star after its lifetime, ensuring only one star fades out every 2 seconds
             const starLifetimeWithDelay = (lifetime + delay) * 1000;
             const removalDelay = Math.max(2000 - (Date.now() - lastStarRemovedTime), 0); // Ensure 2 seconds between removals
             setTimeout(() => {
@@ -126,6 +126,13 @@
         for (let i = 0; i < totalStars; i++) {
             generateRandomStar();
         }
+
+        // Ensure there are always 96 stars
+        setInterval(() => {
+            if (starsContainer.children.length < totalStars) {
+                generateRandomStar();
+            }
+        }, 200); // Check every 200ms to maintain exactly 96 stars
     </script>
 </body>
 </html>
