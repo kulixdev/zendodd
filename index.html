@@ -69,27 +69,39 @@
 
     <script>
         const starsContainer = document.querySelector('.stars');
-        const totalStars = 96; // Ensure 96 stars on screen at all times
+        const totalStars = 196; // Ensure 196 stars on screen at all times
 
         // Function to generate a random star
         function generateRandomStar() {
-            let x, y, size, directionX, directionY, randomDuration, edgePosition;
+            let x, y, size, directionX, directionY, randomDuration, edgePosition, randomOpacity, speedVariation;
 
             // Generate random position
             x = Math.random() * 100; // x position (0-100vw)
             y = Math.random() * 100; // y position (0-100vh)
-            size = Math.random() * 3 + 2; // Size between 2px and 5px
+
+            // Random size (most stars will be small, some larger stars)
+            size = Math.random() * 4 + 2; // Size between 2px and 6px (with larger stars at lower chance)
+            if (Math.random() > 0.85) { // 15% chance for larger stars
+                size = Math.random() * 6 + 6; // Larger size between 6px and 12px
+            }
+
+            // Random brightness (random brightness between 0.4 and 1)
+            randomOpacity = Math.random() * 0.6 + 0.4; // Between 40% to 100% brightness
+
             directionX = (Math.random() - 0.5) * 100; // Random horizontal movement (-50 to 50vw)
             directionY = (Math.random() - 0.5) * 100; // Random vertical movement (-50 to 50vh)
 
             // Random movement duration between 45s (45 seconds) and 1.5m (90 seconds)
             randomDuration = Math.random() * 45 + 45; // Random between 45s and 90s
 
+            // Add some random speed variation for the "life" effect
+            speedVariation = Math.random() * 0.5 + 0.75; // Makes the star move slower or faster than usual
+
             // Pick an edge position randomly (left, right, top, bottom)
             const edgeChoice = Math.floor(Math.random() * 4);
             switch (edgeChoice) {
                 case 0: // Move to the right edge
-                    edgePosition = { x: 100, y: Math.random() * 100 }; 
+                    edgePosition = { x: 100, y: Math.random() * 100 };
                     directionX = 100; // Move to the right edge
                     directionY = (edgePosition.y - y) / randomDuration * 100; // Vertical movement
                     break;
@@ -117,12 +129,13 @@
             star.style.left = `${x}vw`;
             star.style.width = `${size}px`;
             star.style.height = `${size}px`;
-            star.style.opacity = Math.random() * 0.2 + 0.6; // Random opacity between 60% and 80%
+            star.style.opacity = randomOpacity; // Apply random opacity
+            star.style.backgroundColor = `rgba(255, 255, 255, ${randomOpacity})`; // Apply random brightness
 
-            // Set the random movement duration and direction using CSS properties
+            // Set the random movement duration, direction, and speed variation using CSS properties
             star.style.setProperty('--moveX', `${directionX}vw`);
             star.style.setProperty('--moveY', `${directionY}vh`);
-            star.style.animationDuration = `${randomDuration}s`;
+            star.style.animationDuration = `${randomDuration * speedVariation}s`; // Adjusted duration
 
             // Append star to the container
             starsContainer.appendChild(star);
@@ -131,21 +144,21 @@
             setTimeout(() => {
                 // Star has reached the edge, remove and regenerate the star
                 star.remove(); // Remove the star
-                generateRandomStar(); // Generate a new star to maintain 96 stars
-            }, randomDuration * 1000); // Wait for the star to complete its movement duration (converted to ms)
+                generateRandomStar(); // Generate a new star to maintain 196 stars
+            }, randomDuration * speedVariation * 1000); // Wait for the star to complete its movement duration (converted to ms)
         }
 
-        // Generate the initial set of 96 stars
+        // Generate the initial set of 196 stars
         for (let i = 0; i < totalStars; i++) {
             generateRandomStar();
         }
 
-        // Ensure there are always 96 stars
+        // Ensure there are always 196 stars
         setInterval(() => {
             if (starsContainer.children.length < totalStars) {
                 generateRandomStar();
             }
-        }, 200); // Check every 200ms to maintain exactly 96 stars
+        }, 200); // Check every 200ms to maintain exactly 196 stars
     </script>
 </body>
 </html>
