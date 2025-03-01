@@ -34,7 +34,7 @@
             position: absolute;
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
             opacity: 0;
             animation: randomMove 10s infinite linear, fadeInOut 15s infinite linear;
         }
@@ -44,7 +44,8 @@
         }
         @keyframes fadeInOut {
             0% { opacity: 0; }
-            50% { opacity: 0.8; }
+            30% { opacity: 1; }
+            70% { opacity: 1; }
             100% { opacity: 0; }
         }
         .content {
@@ -74,16 +75,18 @@
         const starPositions = [];
 
         function generateRandomStar() {
-            let x, y, size, opacity, lifetime, delay;
+            let x, y, size, opacity, lifetime, delay, movementX, movementY;
 
             // Ensure that the new star position does not overlap any existing ones
             do {
                 x = Math.random() * 100;
                 y = Math.random() * 100;
-                size = Math.random() * 3 + 1; // Random size between 1 and 4 pixels
-                opacity = Math.random() * 0.5 + 0.3; // Random opacity between 0.3 and 0.8
-                lifetime = Math.random() * 5 + 5; // Random lifetime between 5 and 10 seconds
-                delay = Math.random() * 2 + 1; // Delay between 1 and 3 seconds before fading in
+                size = Math.random() * 3 + 2; // Increased minimum size to 2px
+                opacity = Math.random() * 0.4 + 0.3; // Random opacity between 0.3 and 0.7
+                lifetime = Math.random() * 6 + 6; // Random lifetime between 6 and 12 seconds
+                delay = Math.random() * 3 + 2; // Delay between 2 and 5 seconds before fading in
+                movementX = (Math.random() - 0.5) * 0.3; // Slight horizontal movement
+                movementY = (Math.random() - 0.5) * 0.3; // Slight vertical movement
             } while (starPositions.some(pos => {
                 return Math.abs(pos.x - x) < 4 && Math.abs(pos.y - y) < 4; // Minimum distance between stars
             }));
@@ -99,6 +102,12 @@
             star.style.opacity = opacity;
             star.style.animationDuration = `${lifetime}s`;
             star.style.animationDelay = `${delay}s`; // Add delay to fade-in after a random time
+            star.style.animationName = `fadeInOut, randomMove`;
+
+            // Add slight movement during the lifetime of the star
+            star.style.animationTimingFunction = "linear";
+            star.style.animationIterationCount = "infinite";
+            star.style.transform = `translate(${movementX}vw, ${movementY}vh)`; // Apply random movement
 
             starsContainer.appendChild(star);
 
