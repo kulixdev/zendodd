@@ -36,15 +36,7 @@
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
             opacity: 0.4;
-            animation: randomMove linear infinite;
-        }
-        @keyframes randomMove {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(var(--moveX), var(--moveY));
-            }
+            transition: opacity 5s ease-in-out; /* Slow fade-out */
         }
         .content {
             text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.2);
@@ -73,7 +65,7 @@
 
         // Function to generate a random star
         function generateRandomStar() {
-            let x, y, size, directionX, directionY, randomDuration;
+            let x, y, size, directionX, directionY, randomDuration, edgePosition;
 
             // Generate random position
             x = Math.random() * 100; // x position (0-100vw)
@@ -85,6 +77,32 @@
             // Random movement duration between 45s (45 seconds) and 1.5m (90 seconds)
             randomDuration = Math.random() * 45 + 45; // Random between 45s and 90s
 
+            // Pick an edge position randomly (left, right, top, bottom)
+            const edgeChoice = Math.floor(Math.random() * 4);
+            switch (edgeChoice) {
+                case 0: // Move to the right edge
+                    edgePosition = { x: 100, y: Math.random() * 100 }; 
+                    directionX = 100; // Move to the right edge
+                    directionY = (edgePosition.y - y) / randomDuration * 100; // Vertical movement
+                    break;
+                case 1: // Move to the left edge
+                    edgePosition = { x: 0, y: Math.random() * 100 };
+                    directionX = -100; // Move to the left edge
+                    directionY = (edgePosition.y - y) / randomDuration * 100;
+                    break;
+                case 2: // Move to the bottom edge
+                    edgePosition = { x: Math.random() * 100, y: 100 };
+                    directionY = 100; // Move to the bottom edge
+                    directionX = (edgePosition.x - x) / randomDuration * 100;
+                    break;
+                case 3: // Move to the top edge
+                    edgePosition = { x: Math.random() * 100, y: 0 };
+                    directionY = -100; // Move to the top edge
+                    directionX = (edgePosition.x - x) / randomDuration * 100;
+                    break;
+            }
+
+            // Create a new star
             const star = document.createElement('div');
             star.classList.add('star');
             star.style.top = `${y}vh`;
@@ -93,20 +111,17 @@
             star.style.height = `${size}px`;
             star.style.opacity = Math.random() * 0.15 + 0.35; // Random opacity between 35% and 50%
 
-            // Set the random movement with CSS custom properties
+            // Set the random movement duration and direction using CSS properties
             star.style.setProperty('--moveX', `${directionX}vw`);
-            star.style.setProperty('--moveY`, `${directionY}vh`);
-
-            // Set the random duration for the movement
+            star.style.setProperty('--moveY', `${directionY}vh`);
             star.style.animationDuration = `${randomDuration}s`;
 
             // Append star to the container
             starsContainer.appendChild(star);
 
-            // Track star position for when it reaches the edge
+            // Track when the star reaches the edge of the screen
             setTimeout(() => {
                 // Star has reached the edge, fade out and then generate a new star
-                star.style.transition = 'opacity 5s ease-in-out'; // Slow fade-out
                 star.style.opacity = 0;
 
                 setTimeout(() => {
